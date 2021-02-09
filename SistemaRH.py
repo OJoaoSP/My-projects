@@ -8,7 +8,9 @@ def request_name_salario():
     requests = []
     requests.append(request_name)
     requests.append(request_salario)
+    #vai ser usado para armazenar o inss
     requests.append(0)
+    #vai ser usado para armazenar o desconto irff
     requests.append(0)
     funcionario.append(requests[:])
     return funcionario
