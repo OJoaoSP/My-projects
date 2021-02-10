@@ -8,9 +8,9 @@ def request_name_salario():
     requests = []
     requests.append(request_name)
     requests.append(request_salario)
-    #vai ser usado para armazenar o inss
+    #Desconto Inss
     requests.append(0)
-    #vai ser usado para armazenar o desconto irff
+    #Desconto IRRF
     requests.append(0)
     funcionario.append(requests[:])
     return funcionario
@@ -21,56 +21,54 @@ def calculo_salario_inss():
     desconto_alicota_2 = 94.01
     desconto_alicota_3 = 125.38
 
-    #Procurando o funcionario desejado
+    #Procurando o funcionario desejado e facilitando alguns calculos
     for indice, detalhes_fun in enumerate(funcionario):
-        if indice == indeceParaCalculo:
+        if indice == indiceParaCalculo:
             #fazendo o calculo
             if detalhes_fun[1] <= 1045.00:
-                funcionario[indice][2] = funcionario[indice][1] - desconto_minimo
-
+                funcionario[indice][2] =  desconto_minimo
 
             elif  detalhes_fun[1] <= 2089.60 :
                 desconto2 = (detalhes_fun[1] - 1045.00) * 0.09
 
-                funcionario[indice][2] = round(funcionario[indice][1] - desconto2 - desconto_minimo,2)
+                funcionario[indice][2] = round( desconto2 + desconto_minimo,2)
 
             elif detalhes_fun[1] <= 3134.4:
                 desconto3 = (detalhes_fun[1] - 2089.61) * 0.12
 
-                funcionario[indice][2] = round(funcionario[indice][1] - desconto_alicota_2 -desconto3 - desconto_minimo, 2)
+                funcionario[indice][2] = round( desconto_alicota_2 + desconto3 + desconto_minimo, 2)
 
             elif detalhes_fun[1] <= 6101.06:
                 desconto4 = (detalhes_fun[1] - 3134.4) * 0.14
 
-                funcionario[indice][2] = round(funcionario[indice][1] -desconto4 - desconto_minimo - desconto_alicota_2 - desconto_alicota_3, 2)
+                funcionario[indice][2] = round(desconto4 + desconto_minimo + desconto_alicota_2 + desconto_alicota_3, 2)
             return funcionario
 
 
 def calculo_salario_irff():
     #separando quem vai ser o funcionario
     for indice, detalhes_fun in enumerate(funcionario):
-        if indice == indeceParaCalculo:
+        if indice == indiceParaCalculo:
             #calculo
-            if detalhes_fun[1] <= 1903.98:
+            if (detalhes_fun[1] - detalhes_fun[2]) <= 1903.98:
                 break
-            elif detalhes_fun[2] <= 2826.65:
-                funcionario[indice][3] = round((funcionario[indice][2] * 0.075) - 142.80, 2)
+            elif (detalhes_fun[1] - detalhes_fun[2]) <= 2826.65:
+                funcionario[indice][3] = round(( (funcionario[indice][1] - funcionario[indice][2]) * 0.075) - 142.80, 2)
 
-            elif detalhes_fun[2] <= 3751.05:
-                funcionario[indice][3] = round((funcionario[indice][2] * 0.15) - 354.80, 2)
+            elif (detalhes_fun[1] - detalhes_fun[2]) <= 3751.05:
+                funcionario[indice][3] = round(( (funcionario[indice][1] - funcionario[indice][2]) * 0.15) - 354.80, 2)
 
-            elif detalhes_fun[2] <= 4664.68:
-                funcionario[indice][3] = round((funcionario[indice][2] * 0.225) - 636.13, 2)
+            elif (detalhes_fun[1] - detalhes_fun[2]) <= 4664.68:
+                funcionario[indice][3] = round(( (funcionario[indice][1] - funcionario[indice][2]) * 0.225) - 636.13, 2)
 
-            elif detalhes_fun[2] > 4664.69:
-                funcionario[indice][3] = round((funcionario[indice][2] * 0.275) - 869.36, 2)
+            elif (detalhes_fun[1] - detalhes_fun[2]) > 4664.69:
+                funcionario[indice][3] = round(( (funcionario[indice][1] - funcionario[indice][2]) * 0.275) - 869.36, 2)
             return funcionario
 
 # Primeira Interfaçe
 
 while True:
     pergunta_inicial = int(input("1) Cadastras funcionário novo \n2) Imprir Contracheque\n3) Sair"))
-
 
     # Cadastro Funcionario
     if pergunta_inicial == 1:
@@ -83,16 +81,16 @@ while True:
         for ind, func in enumerate(funcionario):
             print(f'Digite: {ind} para calcular os desconto do funcionario: {func[0]}')
         #Indixe desejo
-        indeceParaCalculo = int(input(''))
+        indiceParaCalculo = int(input(''))
 
         # Calculo de inss
         calculo_salario_inss()
         calculo_salario_irff()
-        salario_liso = funcionario[indeceParaCalculo][2] - funcionario[indeceParaCalculo][3]
-        print(f'O funcionario de nome: {funcionario[indeceParaCalculo][0]}\n'
-              f'Recebe Bruto: {funcionario[indeceParaCalculo][1]}\n'
-              f'Seu desconto de INSS é: {funcionario[indeceParaCalculo][2]}\n'
-              f'Seu desconto de IRRF é: {funcionario[indeceParaCalculo][3]}\n'
+        salario_liso =  funcionario[indiceParaCalculo][1] -funcionario[indiceParaCalculo][2] - funcionario[indiceParaCalculo][3]
+        print(f'O funcionario de nome: {funcionario[indiceParaCalculo][0]}\n'
+              f'Recebe Bruto: {funcionario[indiceParaCalculo][1]}\n'
+              f'Seu desconto de INSS é: {funcionario[indiceParaCalculo][2]}\n'
+              f'Seu desconto de IRRF é: {funcionario[indiceParaCalculo][3]}\n'
               f'E seu sálario líquido é: {salario_liso}\n')
 
 
